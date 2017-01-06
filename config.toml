@@ -1,0 +1,9 @@
+languageCode = "en-us"
+baseurl = "https://ericchiang.github.io/"
+title = "posts"
+theme = "beautifulhugo"
+
+[author]
+    name = "Eric Chiang"
+    github = "ericchiang"
+    twitter = "erchiang"
