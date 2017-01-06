@@ -3,9 +3,9 @@ title = "Containers from Scratch"
 date = "2016-01-07"
 +++
 
-This is write up for talk I gave at [CAT BarCamp][cat-barcamp] an awesome unconference at Portland State University. The talk started with the self-imposed challenge _"an intro to containers without rkt or Docker"_.
+This is write up for talk I gave at [CAT BarCamp][cat-barcamp], an awesome unconference at Portland State University. The talk started with the self-imposed challenge _"give an intro to containers without Docker or rkt."_
 
-Often thought of as cheap VMs, containers are just isolated programs running on a single host. The actually isolation comes from several underlying technologies built into the Linux kernel used to restrict groups of processes. Namespaces, cgroups, chroots and lots of terms you've probably heard before.
+Often thought of as cheap VMs, containers are just isolated groups of processes running on a single host. That isolation leverages several underlying technologies built into the Linux kernel: namespaces, cgroups, chroots and lots of terms you've probably heard before.
 
 So, let's have a little fun and use those underlying technologies to build our own containers.
 
@@ -15,16 +15,15 @@ On today's agenda:
 * [chroot](#chroot)
 * [unshare](#creating-namespaces-with-unshare)
 * [nsenter](#entering-namespaces-with-nsenter)
-* [bind mounts](#getting-around-chroot-with-bind-mounts)
+* [bind mounts](#getting-around-chroot-with-mounts)
 * [cgroups](#cgroups)
-* [capabilities](#container-security-capabilities)
-* [conclusion](#conclusion)
+* [capabilities](#container-security-and-capabilities)
 
 ## Container file systems
 
 Container images, the thing you download from the internet, are literally just tarballs (or tarballs in tarballs if you're fancy). The least magic part of a container are the files you interact with.
 
-For this post I've build a simple tarball using a Docker. The tarball holds a something that looks like a Debian filesystem and will be our playground for isolating processes.
+For this post I've build a simple tarball by stripping down a Docker image. The tarball holds something that looks like a Debian file system and will be our playground for isolating processes.
 
 ```
 $ wget https://github.com/ericchiang/containers-from-scratch/releases/download/v0.1.0/rootfs.tar.gz
@@ -44,15 +43,15 @@ $ ls -al rootfs/bin/ls
 -rwxr-xr-x. 1 root root 118280 Mar 14  2015 rootfs/bin/ls
 ```
 
-The resulting directory looks an awful lot like a Linux system. There's a `bin` directory with executables, an `etc` with system configuration, a `lib` with shared libraries, etc.
+The resulting directory looks an awful lot like a Linux system. There's a `bin` directory with executables, an `etc` with system configuration, a `lib` with shared libraries, and so on.
 
-Since I've glossed over how to actually build this tarball, I'll strongly recommend the [_"Minimal Containers"_][minimal-containers] talk by my coworker Brian Redbeard.
+Actually building this tarball is an interesting topic, but one we'll be glossing over here. For an overview, I'd strongly recommend the excellent talk [_"Minimal Containers"_][minimal-containers] by my coworker Brian Redbeard.
 
 ## chroot
 
-The first tool we'll be working with is `chroot`. A thin wrapper around the similarly named syscall that allows us to restrict the view of the file system for a process. In this case, we'll restrict our process to the "rootfs" directory then exec a shell.
+The first tool we'll be working with is `chroot`. A thin wrapper around the similarly named syscall, it allows us to restrict a process' view of the file system. In this case, we'll restrict our process to the "rootfs" directory then exec a shell.
 
-Once we're in there, we can poke around, run commands, and do typical shell things.
+Once we're in there we can poke around, run commands, and do typical shell things.
 
 ```
 $ sudo chroot rootfs /bin/bash
@@ -68,8 +67,6 @@ root@localhost:/#
 
 It's worth noting that this works because of all the things baked into the tarball. When we execute the Python interpreter, we're executing `rootfs/usr/bin/python`, not the host's Python. That interpreter depends on shared libraries and device files that have been intentionally included in the archive.
 
-Despite all of these weird requirements, containers excel because all of these dependencies can be bundled statically. Consumers download a tarball that holds all the hard work of figuring out what it takes to run an application beforehand. 
-
 Speaking of applications, instead of shell we can run one in our chroot.
 
 ```
@@ -77,18 +74,18 @@ $ sudo chroot rootfs python -m SimpleHTTPServer
 Serving HTTP on 0.0.0.0 port 8000 ...
 ```
 
-If you're following along at home, you'll be able to view everything the server can see at [http://localhost:8000/](http://localhost:8000/).
+If you're following along at home, you'll be able to view everything the file server can see at [http://localhost:8000/](http://localhost:8000/).
 
 ## Creating namespaces with unshare
 
-How isolated is this chroot'd process? Let's run a top command on the host in another terminal.
+How isolated is this chrooted process? Let's run a command on the host in another terminal.
 
 ```
 $ # outside of the chroot
 $ top
 ```
 
-Sure enough, in the chroot we can see the "top" invocation.
+Sure enough, we can see the `top` invocation from inside the chroot.
 
 ```
 $ sudo chroot rootfs /bin/bash
@@ -98,7 +95,7 @@ root@localhost:/# ps aux | grep top
 root     24764  0.0  0.0  11132   948 ?        S+   22:29   0:00 grep top
 ```
 
-Bet yet, our chrooted shell is running as root, so it has no problem killing it.
+Better yet, our chrooted shell is running as root, so it has no problem killing the `top` process.
 
 ```
 root@localhost:/# pkill top
@@ -106,15 +103,13 @@ root@localhost:/# pkill top
 
 So much for containment.
 
-This is where we get to talk about namespaces. Namespaces are the chroots of things like the process tree, network interfaces, and mounts allowing us to restrict a process' view of these systems.
+This is where we get to talk about namespaces. Namespaces allow us to create restricted views of systems like the process tree, network interfaces, and mounts.
 
-Creating namespace is super easy, just a single syscall with one argument, [`unshare`](https://linux.die.net/man/2/unshare).
-
-The `unshare` command line tool gives us a nice wrapper around this syscall and lets us setup namespaces manually. In this case, we'll create a PID namespace for the shell.
+Creating namespace is super easy, just a single syscall with one argument, [`unshare`](https://linux.die.net/man/2/unshare). The `unshare` command line tool gives us a nice wrapper around this syscall and lets us setup namespaces manually. In this case, we'll create a PID namespace for the shell, then execute the chroot like the last example.
 
 ```
-$ # -p to create a PID namespace, -f to fork, --mount-proc remounts /proc
-$ sudo unshare -p -f --mount-proc=$PWD/rootfs/proc chroot rootfs /bin/bash
+$ sudo unshare -p -f --mount-proc=$PWD/rootfs/proc \
+    chroot rootfs /bin/bash
 root@localhost:/# ps aux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0  20268  3240 ?        S    22:34   0:00 /bin/bash
@@ -122,15 +117,16 @@ root         2  0.0  0.0  17504  2096 ?        R+   22:34   0:00 ps aux
 root@localhost:/#
 ```
 
-Poking around we can see that our process thinks it's PID 1. Better yet, it can't see the host's process tree.
+Having created a new process namespace, poking around our chroot we'll notice something a bit funny. Our shell thinks its PID is 1?! What's more, we can't see the host's process tree anymore.
 
 ## Entering namespaces with nsenter
 
-A powerful aspect of namespaces is their composability; processes may choose to separate some namespaces but share others. For instance it may be useful for two programs to have isolated PID namespaces, but [share a network namespace][k8s-pods]. This brings us to the [`setns`][setns] syscall and the `nsenter`command line tool.
+A powerful aspect of namespaces is their composability; processes may choose to separate some namespaces but share others. For instance it may be useful for two programs to have isolated PID namespaces, but share a network namespace (e.g. [Kubernetes pods][k8s-pods]). This brings us to the [`setns`][setns] syscall and the `nsenter`command line tool.
 
 Let's find the shell running in a chroot from our last example.
 
 ```
+$ # From the host, not the chroot.
 $ ps aux | grep /bin/bash | grep root
 ...
 root     29840  0.0  0.0  20272  3064 pts/5    S+   17:25   0:00 /bin/bash
@@ -149,7 +145,7 @@ lrwxrwxrwx. 1 root root 0 Oct 15 17:31 user -> 'user:[4026531837]'
 lrwxrwxrwx. 1 root root 0 Oct 15 17:31 uts -> 'uts:[4026531838]'
 ```
 
-The `nsenter` command provides a wrapper around `setns` to enter a namespace. We'll provide the namespace file, then run the `unshare` to remount `/proc` and `chroot` to setup a chroot.
+The `nsenter` command provides a wrapper around `setns` to enter a namespace. We'll provide the namespace file, then run the `unshare` to remount `/proc` and `chroot` to setup a chroot. This time, instead of creating a new namespace, our shell will join the existing one.
 
 ```
 $ sudo nsenter --pid=/proc/29840/ns/pid \
@@ -162,25 +158,27 @@ root         5  0.0  0.0  20276  3248 ?        S    00:29   0:00 /bin/bash
 root         6  0.0  0.0  17504  1984 ?        R+   00:30   0:00 ps aux
 ```
 
-Having entered the namespace successfully, when we run `ps` in the second shell we see the first.
+Having entered the namespace successfully, when we run `ps` in the second shell (PID 5) we see the first shell (PID 1).
 
-## Getting around chroot with bind mounts
+## Getting around chroot with mounts
 
-We make a new directory to mount into the chroot and write a file.
+When deploying an "immutable" container it often becomes important to inject files or directories into the chroot, either for storage or configuration. For this example, we'll create some files on the host, then expose them read-only to the chrooted shell using `mount`.
+
+First, let's make a new directory to mount into the chroot and create a file there.
 
 ```
 $ sudo mkdir readonlyfiles
 $ echo "hello" > readonlyfiles/hi.txt
 ```
 
-Next, we'll create a target directory in our container and bind mount the directory in.
+Next, we'll create a target directory in our container and bind mount the directory providing the `-o ro` argument to make it read-only. If you've never seen a bind mount before, think of this like a symlink on steroids.
 
 ```
 $ sudo mkdir -p rootfs/var/readonlyfiles
-$ sudo mount --bind -o $PWD/readonlyfiles $PWD/rootfs/var/readonlyfiles
+$ sudo mount --bind -o ro $PWD/readonlyfiles $PWD/rootfs/var/readonlyfiles
 ```
 
-The chroot'd process can now see the mounted files.
+The chrooted process can now see the mounted files.
 
 ```
 $ sudo chroot rootfs /bin/bash
@@ -188,16 +186,16 @@ root@localhost:/# cat /var/readonlyfiles/hi.txt
 hello
 ```
 
-However, we can't write them.
+However, it can't write them.
 
 ```
 root@localhost:/# echo "bye" > /var/readonlyfiles/hi.txt
 bash: /var/readonlyfiles/hi.txt: Read-only file system
 ```
 
-Mounts provide the ability to inject files or persistent space to a container without editing the actual container image. We can provide simple things like onfiguration or credentials through files, or even persistent volumes like NFS.
+Though a pretty basic example, it can actually be expanded quickly for things like NFS, or in-memory file systems by switching the arguments to `mount`.
 
-Remove the mount using `umount` (`rm` won't work).
+Use `umount` to remove the bind mount (`rm` won't work).
 
 ```
 $ sudo umount $PWD/rootfs/var/readonlyfiles
@@ -207,7 +205,7 @@ $ sudo umount $PWD/rootfs/var/readonlyfiles
 
 cgroups, short for control groups, allow kernel imposed isolation on resources like memory and CPU. After all, what's the point of isolating processes they can still kill neighbors by hogging RAM?
 
-The kernel exposes cgroups through a magical `/sys/fs/cgroup` directory. If your machine doesn't have one you may have to [mount the memory cgroup][mount-cgroups] to follow along.
+The kernel exposes cgroups through the `/sys/fs/cgroup` directory. If your machine doesn't have one you may have to [mount the memory cgroup][mount-cgroups] to follow along.
 
 ```
 $ ls /sys/fs/cgroup/
@@ -215,7 +213,7 @@ blkio  cpuacct      cpuset   freezer  memory   net_cls,net_prio  perf_event  sys
 cpu    cpu,cpuacct  devices  hugetlb  net_cls  net_prio          pids
 ```
 
-For this example we'll create a cgroup to restrict the memory of a process. Creating a cgroup is easy, just create a directory and the kernel fills it with configuration files. In this case we'll create a memory cgroup called "demo".
+For this example we'll create a cgroup to restrict the memory of a process. Creating a cgroup is easy, just create a directory. In this case we'll create a memory group called "demo". Once created, the kernel fills the directory with files that can be used to configure the cgroup.
 
 ```
 $ sudo su
@@ -239,14 +237,14 @@ memory.limit_in_bytes               tasks
 memory.max_usage_in_bytes
 ```
 
-We'll use the magic of the `echo` command to limit the cgroup to 100MB and turn off swap.
+To adjust a value we just have to write to the corresponding file. Let's limit the cgroup to 100MB of memory and turn off swap.
 
 ```
 # echo "100000000" > /sys/fs/cgroup/memory/demo/memory.limit_in_bytes
 # echo "0" > /sys/fs/cgroup/memory/demo/memory.swappiness
 ```
 
-Processes are assigned to cgroups through the `tasks` file which contains a list of PIDs. We can join the cgroup by writing our own PID.
+The `talks` file is special, it contains the list of processes which are assigned to the cgroup. To join the cgroup we can write our own PID.
 
 ```
 # echo $$ > /sys/fs/cgroup/memory/demo/tasks
@@ -280,9 +278,9 @@ If you've setup the cgroup correctly, this program won't crash your computer.
 Killed
 ```
 
-If you're still reading, congratulations!
+If that didn't crash your computer, congratulations!
 
-cgroups can't be removed until every processes in the `tasks` file has exited or been reassigned. Exit the shell and remove the directory with `rmdir` (don't use `rm -r`).
+cgroups can't be removed until every processes in the `tasks` file has exited or been reassigned to another group. Exit the shell and remove the directory with `rmdir` (don't use `rm -r`).
 
 ```
 # exit
@@ -290,11 +288,11 @@ exit
 $ sudo rmdir /sys/fs/cgroup/memory/demo
 ```
 
-## Container security: capabilities
+## Container security and capabilities
 
 Containers are extremely effective ways of running arbitrary code from the internet as root, and this is where the low overhead of containers hurts us. Containers are significantly easier to break out of than a VM. As a result many technologies used to improve the security of containers, such as SELinux, seccomp, and capabilities involve limiting the power of processes already running as root.
 
-In this section we'll be exploring Linux capabilities.
+In this section we'll be exploring [Linux capabilities][capabilities].
 
 Consider the following Go program which attempts to listen on port 80.
 
@@ -326,7 +324,7 @@ listen tcp :80: bind: permission denied
 
 Predictably this program fails; listing on port 80 requires permissions we don't have. Of course we can just use `sudo`, but we'd like to give the binary just the one permission to listen on lower ports.
 
-Capabilities are a set of discrete powers that together make up everything root can do. This can be seemingly mundane things like setting the system clock, or the ability to kill arbitrary processes. In this case, `CAP_NET_BIND_SERVICE` allows executables to listen on lower ports.
+Capabilities are a set of discrete powers that together make up everything root can do. This ranges from things like setting the system clock, to kill arbitrary processes. In this case, `CAP_NET_BIND_SERVICE` allows executables to listen on lower ports.
 
 We can grant the executable `CAP_NET_BIND_SERVICE` using the `setcap` command.
 
@@ -338,7 +336,7 @@ $ ./listen
 success
 ```
 
-For things already running as root, we're more interested in taking capabilities away than granting them. First let's see all powers our root shell has:
+For things already running as root, like most containerized apps, we're more interested in taking capabilities away than granting them. First let's see all powers our root shell has:
 
 ```
 $ sudo su
@@ -356,7 +354,7 @@ groups=0(root)
 
 Yeah, that's a lot of capabilities.
 
-As an example, we'll drop a bunch of capabilities using `capsh` including `CAP_CHOWN`. If things work as expected, our shell shouldn't be able to modify file ownership.
+As an example, we'll use `capsh` to drop a few capabilities including `CAP_CHOWN`. If things work as expected, our shell shouldn't be able to modify file ownership despite being root.
 
 ```
 $ sudo capsh --drop=cap_chown,cap_setpcap,cap_setfcap,cap_sys_admin --chroot=$PWD/rootfs --
@@ -366,16 +364,19 @@ root@localhost:/# chown nobody /bin/ls
 chown: changing ownership of '/bin/ls': Operation not permitted
 ```
 
+Conventional wisdom still states that VMs isolation is mandatory when running untrusted code. But security features like capabilities are important to protect against hacked applications running in containers.
+
+Beyond more elaborate tools like seccomp, SELinux, and capabilities, applications running in containers generally benefit from the same kind of best practices as applications running outside of one. Know what your linking against, don't run as root in your container, update for known security issues in a timely fashion.
+
 ## Conclusion
 
-Yes, there are a ton of things we didn't cover here. But before we get into that list, I think it's important to stress some points.
+Containers aren't magic. Anyone with a Linux machine can play around with them and tools like Docker and rkt are just wrappers around things built into every modern kernel. No, you probably shouldn't go and implement your own container runtime. But having a better understanding of these lower level technologies will help you work with these higher level tools (especially when debugging).
 
-Containers aren't magic. Anyone with a Linux machine can play around with them and tools like Docker, rkt, or LXC are just wrappers around things built into every modern kernel. No, you probably shouldn't go and implement your own container runtime. But having a better understanding of these lower level technologies will help you work with (and especially debug) these higher level tools.
-
-There's a ton we didn't cover here.
+There's a ton of topics I wasn't able to cover today, networking and copy-on-write file systems probably being the biggest two. However, I hope this acts as a good starting point for anyone wanting to get their hands dirty. Happy hacking!
 
 [cat-barcamp]: http://catbarcamp.org/
 [minimal-containers]: https://www.youtube.com/watch?v=gMpldbcMHuI
 [k8s-pods]: http://kubernetes.io/docs/user-guide/pods/
 [setns]: https://linux.die.net/man/2/setns
 [mount-cgroups]: https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/sec-memory.html#memory_example-usage
+[capabilities]: https://linux.die.net/man/7/capabilities
