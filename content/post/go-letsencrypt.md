@@ -1,6 +1,6 @@
 +++
 title = "A Let's Encrypt Client for Go"
-date = 2015-11-13
+date = "2015-11-13"
 +++
 
 <small>Just want to jump into the GitHub project? [Click here](https://github.com/ericchiang/letsencrypt).</small>
