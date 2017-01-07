@@ -2,6 +2,7 @@ languageCode = "en-us"
 baseurl = "https://ericchiang.github.io/"
 title = "posts"
 theme = "beautifulhugo"
+googleAnalytics = "UA-64244584-1"
 
 [author]
     name = "Eric Chiang"
