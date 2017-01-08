@@ -16,7 +16,7 @@ Open source:
 
 Talks:
 
-- [_Kubernetes Auth and Acess Control_][k8s-auth] (video, 41 min): KubeCon October, 2016 
+- [_Kubernetes Auth and Access Control_][k8s-auth] (video, 41 min): KubeCon October, 2016
 
 [coreos]: https://coreos.com
 [k8s]: http://kubernetes.io
