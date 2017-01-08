@@ -1,6 +1,6 @@
 +++
 title = "Containers from Scratch"
-date = "2016-01-07"
+date = "2017-01-07"
 +++
 
 This is write up for talk I gave at [CAT BarCamp][cat-barcamp], an awesome unconference at Portland State University. The talk started with the self-imposed challenge _"give an intro to containers without Docker or rkt."_
