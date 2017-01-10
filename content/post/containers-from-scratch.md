@@ -244,7 +244,7 @@ To adjust a value we just have to write to the corresponding file. Let's limit t
 # echo "0" > /sys/fs/cgroup/memory/demo/memory.swappiness
 ```
 
-The `talks` file is special, it contains the list of processes which are assigned to the cgroup. To join the cgroup we can write our own PID.
+The `tasks` file is special, it contains the list of processes which are assigned to the cgroup. To join the cgroup we can write our own PID.
 
 ```
 # echo $$ > /sys/fs/cgroup/memory/demo/tasks
