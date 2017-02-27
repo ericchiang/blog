@@ -16,7 +16,8 @@ Open source:
 
 Talks:
 
-- [_Kubernetes Auth and Access Control_][k8s-auth] (video, 41 min): KubeCon October, 2016
+- _Writing Kubernetes Controllers (using Go!)_ - [(video, 15 min)][k8s-controllers-vid] [(slides)][k8s-controllers-slides] - Go SF 1.8 Release Party - February, 2017
+- _Kubernetes Auth and Access Control_ - [(video, 41 min)][k8s-auth] - KubeCon Seattle - October, 2016
 
 [coreos]: https://coreos.com
 [k8s]: http://kubernetes.io
@@ -24,4 +25,6 @@ Talks:
 [k8s-client]: https://github.com/ericchiang/k8s
 [go-oidc]: https://github.com/coreos/go-oidc
 [pup]: https://github.com/ericchiang/pup
+[k8s-controllers-vid]: https://www.youtube.com/watch?v=11JIAwOBCpg&feature=youtu.be&t=22m52s
+[k8s-controllers-slides]: https://talks.godoc.org/github.com/ericchiang/go-1.8-release-party/kubernetes-controllers.slide
 [k8s-auth]: https://www.youtube.com/watch?v=WvnXemaYQ50
