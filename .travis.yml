@@ -1,12 +1,16 @@
 # https://github.com/travis-ci/travis-ci/issues/4895#issuecomment-150703192
 language: generic
 
+notifications:
+  email: false
+
 env:
   global:
   - GITHUB_USERNAME=ericchiang-robot
   - secure: p8pvE1cbOuEK8DUZq9riHJeYIR15dAUIgq02YaMOdL0p90gpmUWSA/tycL0Q3c1M3DqG26cNqGQwtoIzPHT0+m/ctt6VDVT0s4khTZQn0HK27zgAobhg8lGy4sLuXwhcbHaHF3GalPNOxz3lUSIVaEMlAr6Zvv76ZMPa0pgMMx5wFsgFrS3+u9u9ZKBbeHrTBEKGlelT7uWn78nNFJhehLg2Vb0vN/isLLlp73Vu3vHBGYQahEND3xbc2YSztt8bZbzyFS32OP06C+RpBWjx9Cts9w/K8KnDb108+VBTnkQ65yK98lGbhnXmJgNNG5laehOLptcyGsY8zwMrf6eYI2NMDvZglTwU3LVKQRawiQMBVbnx+XMW0Kv1FQax4a+2uR1jnZnM3MgZr3k+RjTUSxOTN/ZkoqE95E6ZlkKyKi5efeooO8AEmCC23HnbmVRkPs1Y67c9PxFIokbv1x+ixnPipZpO7F7X/JBolLCFAUZSLyeMENf/00WpobqIPls1TkpPosvUt26NA4T+WXMGdMoC9iQbOHe0Tk8ruj8vAIWVD35grD3u/T/EypOlWPk5jY0c1vzN2VravQa+RIF71RcjhTtEa8V7xzarxeM5R8jgm9Ztben70CbHDNV8Q+/gq5KSs8RGhq/x50nCJcfem23oGadGlIsCkUnK91a/R2s=
 
 install:
+- git submodule update --init --recursive
 - mkdir -p $HOME/bin
 - wget https://github.com/gohugoio/hugo/releases/download/v0.31/hugo_0.31_Linux-64bit.tar.gz
 - tar -zxvf hugo_0.31_Linux-64bit.tar.gz -C $HOME/bin
