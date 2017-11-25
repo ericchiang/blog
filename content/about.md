@@ -2,9 +2,11 @@
 title = "about"
 +++
 
-Hi, I'm Eric. I'm an engineer in San Francisco for [CoreOS][coreos] where I work on authentication and authorization systems, contribute to upstream Kubernetes auth systems, and help build a Kubernetes distribution.
+Eric Chiang<br>
+github: [@ericchiang](https://github.com/ericchiang)<br>
+twitter: [@erchiang](https://twitter.com/erchiang)
 
-I previously built container platforms for deploying and managing machine learning APIs at a New York based startup (YC W15).
+Engineer at [CoreOS](https://coreos.com), and [Kubernetes](https://kubernetes.io) maintainer.
 
 Open source:
 
@@ -13,8 +15,13 @@ Open source:
 - [pup][pup]: Like jq, but for HTML.
 - [k8s][k8s-client]: A slimmed down Kubernetes client that uses protobufs.
 
+Posts on other sites:
+
+- [_Using RBAC, Generally Available in Kubernetes v1.8_](http://blog.kubernetes.io/2017/10/using-rbac-generally-available-18.html) - October 27, 2017
+
 Talks:
 
+- _Containers from Scratch_ - [(video, 36 min)](https://www.youtube.com/watch?v=wyqoi52k5jM) - CoreOS Fest - May, 2017
 - _Writing Kubernetes Controllers (using Go!)_ - [(video, 15 min)][k8s-controllers-vid] [(slides)][k8s-controllers-slides] - Go SF 1.8 Release Party - February, 2017
 - _Kubernetes Auth and Access Control_ - [(video, 41 min)][k8s-auth] - KubeCon Seattle - October, 2016
 
