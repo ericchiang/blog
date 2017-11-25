@@ -1,10 +1,20 @@
 languageCode = "en-us"
 baseurl = "https://ericchiang.github.io/"
 title = "posts"
-theme = "beautifulhugo"
+theme = "xmin"
 googleAnalytics = "UA-64244584-1"
 
 [author]
     name = "Eric Chiang"
     github = "ericchiang"
     twitter = "erchiang"
+
+[[menu.main]]
+    name = "1"
+    identifier = "posts"
+    url = "/"
+
+[[menu.main]]
+    name = "2"
+    identifier = "about"
+    url = "/about/"
