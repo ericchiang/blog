@@ -4,16 +4,17 @@ title = "about"
 
 Eric Chiang<br>
 github: [@ericchiang](https://github.com/ericchiang)<br>
-twitter: [@erchiang](https://twitter.com/erchiang)
+twitter: [@erchiang](https://twitter.com/erchiang)<br>
+email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
 
-Engineer at [CoreOS](https://coreos.com), and [Kubernetes](https://kubernetes.io) maintainer.
+Security engineer.
 
 Open source:
 
 - [dex][dex]: An OpenID Connect server which federates to other IdPs (LDAP, SAML, etc.)
 - [go-oidc][go-oidc]: OpenID Connect support for golang.org/x/oauth2.
 - [pup][pup]: Like jq, but for HTML.
-- [k8s][k8s-client]: A slimmed down Kubernetes client that uses protobufs.
+- [k8s][k8s-client]: A Kubernetes client with two external dependencies.
 
 Posts on other sites:
 
@@ -25,9 +26,7 @@ Talks:
 - _Writing Kubernetes Controllers (using Go!)_ - [(video, 15 min)][k8s-controllers-vid] [(slides)][k8s-controllers-slides] - Go SF 1.8 Release Party - February, 2017
 - _Kubernetes Auth and Access Control_ - [(video, 41 min)][k8s-auth] - KubeCon Seattle - October, 2016
 
-[coreos]: https://coreos.com
-[k8s]: http://kubernetes.io
-[dex]: https://github.com/coreos/dex
+[dex]: https://github.com/dexidp/dex
 [k8s-client]: https://github.com/ericchiang/k8s
 [go-oidc]: https://github.com/coreos/go-oidc
 [pup]: https://github.com/ericchiang/pup
