@@ -1,0 +1,10 @@
+{{- range $i, $line := split (.Get 0 | readFile ) "\n" -}}
+  {{- if ge (add $i 1) ($.Get 1) -}}
+    {{- if lt $i ($.Get 2) -}}
+      {{- if ne (string (add $i 1)) ($.Get 1) -}}
+        {{- "\n" -}}
+      {{- end -}}
+      {{- strings.TrimPrefix "\t" $line -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
