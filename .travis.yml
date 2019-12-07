@@ -12,8 +12,8 @@ env:
 install:
 - git submodule update --init --recursive
 - mkdir -p $HOME/bin
-- wget https://github.com/gohugoio/hugo/releases/download/v0.51/hugo_0.51_Linux-64bit.tar.gz
-- tar -zxvf hugo_0.51_Linux-64bit.tar.gz -C $HOME/bin
+- wget https://github.com/gohugoio/hugo/releases/download/v0.60.1/hugo_0.60.1_Linux-64bit.tar.gz
+- tar -zxvf hugo_0.60.1_Linux-64bit.tar.gz  -C $HOME/bin
 - export PATH=$PATH:$HOME/bin
 
 deploy:
