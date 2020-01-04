@@ -24,7 +24,7 @@ Of course with the awesomeness of Linux containers you just need to use Docker!
 
 The workflow we're looking for: for each test, start a fresh instance of Postgres in a Docker container, then run the tests using it.
 
-```go
+```
 dockerContainer, err := NewPostgresDB()
 if err != nil {
 	// handle error
@@ -36,7 +36,7 @@ defer destroy(dockerContainer)
 
 For our code, the Postgres struct will look like this. There's only two bits of information that it'll hold, the port the container is running on and the ID of the container.
 
-```go
+```
 type PostgresDB struct {
 	// Of form 'host:port'
 	Host string
@@ -52,7 +52,7 @@ Postgres has an [official image](https://hub.docker.com/_/postgres/) through Doc
 
 Starting a container is easy using Docker and will look something like the following.
 
-```nohighlight
+```
 docker run -d -p $HOSTPORT:5432 -e POSTGRES_PASSWORD=$PASS postgres:$VERSION
 ```
 
@@ -60,7 +60,7 @@ The `-p` flag requests an exposed port and, because Postgres runs on port `5432`
 
 The actual image allows for a bit of configuration through the env. This will be another struct.
 
-```go
+```
 type PostgresConfig struct {
 	Password string
 	Username string // defaults to "postgres"
@@ -71,7 +71,7 @@ type PostgresConfig struct {
 
 To create an instance of Postgres, we'll determine Docker's command line arguments given a config. Then run the Docker command through Go's `os/exec` library. 
 
-```go
+```
 func NewPostgresDB(c PostgresConfig) (*PostgresDB, error) {
 	img := "postgres:latest"
 	if c.Version == "" {
@@ -119,7 +119,7 @@ The host address specified above is `127.0.0.1:0`. Port 0 is a way of telling th
 
 `docker inspect` allows us figure out what port the operating system chose. This returns a giant JSON object with, among other things, network settings for the running container.
 
-```go
+```
 func portMapping(cid, containerPort string) (hostAddr string, err error) {
 	out, err := exec.Command("docker", "inspect", cid).CombinedOutput()
 	if err != nil {
@@ -151,7 +151,7 @@ func portMapping(cid, containerPort string) (hostAddr string, err error) {
 
 Finally, closing the database should result in the entire container being removed. Again, we'll just use `os/exec` to call Docker.
 
-```go
+```
 // Close removes the container running the postgres database.
 func (db *PostgresDB) Close() error {
 	out, err := exec.Command("docker", "rm", "-f", db.cid).CombinedOutput()
@@ -166,13 +166,13 @@ func (db *PostgresDB) Close() error {
 
 Go tests always have a signature like this:
 
-```go
+```
 func TestXyz(t *testing.T)
 ```
 
 We want to write tests that take a database connection as well. Something that looks like this:
 
-```go
+```
 type DBTest func(t *testing.T, conn *sql.DB)
 ```
 
@@ -185,7 +185,7 @@ So let's write a function to run a `DBTest`. This steps will be
 
 Importing the [`github.com/lib/pq`](https://github.com/lib/pq) driver is enough to connect to the container. While the code we used before will create and clean up a new instance of Postgres for each test.
 
-```go
+```
 import (
 	// other imports
 
@@ -240,7 +240,7 @@ func RunDBTest(t *testing.T, dbVersion string, test DBTest) {
 
 Finally we can just write tests that adhere to `DBTest`'s function signature and run them with `RunDBTest`. Let's test creating a table and inserting a record.
 
-```go
+```
 package dbtest
 
 import (
@@ -295,7 +295,7 @@ func TestInsertWorker95(t *testing.T) { RunDBTest(t, version95, testInsertWorker
 
 This setup enables a bunch of cool things like tests against different versions of Postgres. Once we (or importantly, one of our coworkers) have pulled the correct Postgres images, we just have to run `go test`. The only dependencies are Go and Docker.
 
-```nohighlight
+```
 $ go test -v
 === RUN   TestCreateTable94
 --- PASS: TestCreateTable94 (6.21s)

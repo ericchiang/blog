@@ -23,7 +23,7 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f letsencrypt -N ''
 
 Then we'll load the private key and register it with the server.
 
-```go
+```
 package main
 
 import (
@@ -77,7 +77,7 @@ Once we've registered a key pair the next step is to begin a challenge for a spe
 
 The server responds to an authorization request with a list of challenges supported for that domain and a list of combinations of challenges to perform. We'll print the response and take a look at the results.
 
-```go
+```
 auth, _, err := cli.NewAuthorization(key, "dns", "example.org")
 if err != nil {
 	log.Fatal(err)
@@ -119,7 +119,7 @@ The server has now challenged us to provision either an HTTP or TLS resource. It
 
 Let's take a look at the HTTP challenge.
 
-```go
+```
 // grab the HTTP challenge again
 httpChalURL := "http://127.0.0.1:4000/acme/challenge/aOOnrY65LHMSYK6HftGeK795dqEII40NYGVESqqKmGA/3"
 chal, err := cli.Challenge(httpChalURL)
@@ -159,7 +159,7 @@ As you can see the server has returned a challenge of type `http-01` and a token
 
 To actually serve the file, we'll need to spin up a HTTP server on the domain we've requested. We then notify the server that the challenge is ready for verification, and poll the challenge until we get a result.
 
-```go
+```
 go func() {
 	// serve the resource at the given path
 	http.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
@@ -195,7 +195,7 @@ First, the client generates a certificate request. This holds information like w
 
 You can use tools like `openssl` to generate these request. But since we're talking Go, here's how you make one using the standard library.
 
-```go
+```
 package main
 
 import (
@@ -242,7 +242,7 @@ Running this will create `example.org.csr` and `example.org.key`.
 
 Finally we sign the certificate request using our account's key (not the one used to generate the request) and send it to the server. Since the account associated with the key has completed the challenges for the domain we've requested, it should issue us a certificate.
 
-```go
+```
 package main
 
 import (

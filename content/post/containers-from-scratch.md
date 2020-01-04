@@ -252,7 +252,7 @@ The `tasks` file is special, it contains the list of processes which are assigne
 
 Finally we need a memory hungry application.
 
-```python
+```
 f = open("/dev/urandom", "r")
 data = ""
 
@@ -296,7 +296,7 @@ In this section we'll be exploring [Linux capabilities][capabilities].
 
 Consider the following Go program which attempts to listen on port 80.
 
-```go
+```
 package main
 
 import (

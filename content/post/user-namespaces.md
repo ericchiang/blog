@@ -11,7 +11,7 @@ User namespaces are a way to create unique views of user and group IDs. Unlike [
 
 The `unshare` tool can be used to create a user namespace and act as root:
 
-```shell
+```
 $ whoami
 ericchiang
 $ unshare --map-root-user
@@ -20,7 +20,7 @@ root
 ```
 Under the hood, `unshare` is calling [`unshare(2)`][unshare-2] and `fork(2)`, modifying the UID and GID mappings files under `/proc` , then exec’ing a shell:
 
-```shell
+```
 $ unshare --map-root-user
 # cat /proc/self/uid_map
          0       1000          1
@@ -30,13 +30,13 @@ $ unshare --map-root-user
 
 The map files are formatted as follows. In the case above, `0` (root) for the target ID, `1000` (my PID/GID) for the source ID, and `1` to only map a single UID and GID:
 
-```shell
+```
 [target ID] [source ID] [ID range]
 ```
 
 Within a user namespace, a process can run commands as if it was root. For example, an unprivileged user can call `chroot`:
 
-```shell
+```
 $ # create a root file system
 $ mkdir rootfs
 $ sudo debootstrap stable rootfs http://deb.debian.org/debian/
@@ -49,7 +49,7 @@ opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 
 Or setup other namespaces and mount filesystems:
 
-```shell
+```
 $ # create a user, mount, and PID namespace
 $ unshare --map-root-user --mount --pid --fork
 # mount -t proc proc $PWD/rootfs/proc
@@ -62,7 +62,7 @@ $ unshare --map-root-user --mount --pid --fork
 
 But are we root? We certainly have a lot of capabilities:
 
-```shell
+```
 $ unshare --map-root-user capsh --print
 Current: = cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read+ep
 Bounding set =cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
@@ -77,14 +77,14 @@ groups=65534(nogroup),65534(nogroup),65534(nogroup),0(root)
 
 The truth is, once the process attempts to interact with a resource outside of the namespace, “real root” restrictions apply. For example, the process can’t listen on a privileged port:
 
-```shell
+```
 $ unshare --map-root-user nc -l -p 80
 Can't grab 0.0.0.0:80 with bind : Permission denied
 ```
 
 Or override host file permissions:
 
-```shell
+```
 $ unshare --map-root-user cat /etc/shadow
 cat: /etc/shadow: Permission denied
 ```

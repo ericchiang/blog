@@ -4,6 +4,8 @@ date = "2015-06-21"
 
 +++
 
+NOTE: For an updated version of this post, see the GopherCon 2019 talk _"PKI for Gopher"_. ([Video](https://www.youtube.com/watch?v=VwPQKS9Njv0), [Slides](https://docs.google.com/presentation/d/16y-HTvL7ASzf9JspCBX0OVmhwUWVoLj9epzJfNMQRr8/edit))
+
 For a long time my knowledge of TLS was Googling "how to configure nginx as an HTTPS proxy." Okay, the cert goes here and the key goes here, that's my job done. But with more and more pushes for things HTTPS and HTTP/2 (which defaults to using TLS), it sometimes helps to understand this a little better.
 
 Unfortunately a lot of the articles on this topic are either too high level or too specific and, when I need to learn the topic, I ended up just reading the Go documentation.
@@ -16,7 +18,7 @@ Public and private key cryptography is awesome and a good place to start. If you
 
 Go has a fairly straight forward `crypto/rsa` package in the standard library. First we can just generate a new, random pair.
 
-```go
+```
 // create a public/private keypair
 // NOTE: Use crypto/rand not math/rand
 privKey, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -29,7 +31,7 @@ Here's how this works. Things encrypt with a public key can only be decrypted by
 
 Let's actually encrypt something using the public key.
 
-```go
+```
 plainText := []byte("The bourgeois human is a virus on the hard drive of the working robot!")
 
 // use the public key to encrypt the message
@@ -48,7 +50,7 @@ As you can see, it's even an effort to print the junk that's results from this e
 
 To decrypt this cipher text, we simply use the private key.
 
-```go
+```
 // decrypt with the private key
 decryptedText, err := rsa.DecryptPKCS1v15(nil, privKey, cipherText)
 if err != nil {
@@ -72,7 +74,7 @@ To to this, the document is run through a hashing algorithm (we'll use SHA256), 
 
 The __public__ key can then confirm, again through math we'll ignore, if its private key combined with a particular hash would have created that signature. Here's what that looks like using `crypto/rsa`.
 
-```go
+```
 // compute the hash of our original plain text
 hash := sha256.Sum256(plainText)
 fmt.Printf("The hash of my message is: %#x\n", hash)
@@ -88,7 +90,7 @@ if err != nil {
 
 We can then attempt to verify the result with different combinations of messages and signatures.
 
-```go
+```
 // use a public key to verify the signature for a message was created by the private key
 verify := func(pub *rsa.PublicKey, msg, signature []byte) error {
     hash := sha256.Sum256(msg)
@@ -113,7 +115,7 @@ Go's `crypto/x509` package is what I'll be using to actually generate and work w
 
 To create a new certificate, we first have to provide a template for one. Because we'll be doing this a couple times, I've made a helper function to do some of the busy work.
 
-```go
+```
 // helper function to create a cert template with a serial number and other required fields
 func CertTemplate() (*x509.Certificate, error) {
     // generate a random serial number (a real cert authority would have some logic behind this)
@@ -139,7 +141,7 @@ Certificates are public keys with some attached information (like what domains t
 
 In this next block, we create a key-pair called `rootKey` and a certificate template called `rootCertTmpl`, then fill out some information about what we want to use it for.
 
-```go
+```
 // generate a new key-pair
 rootKey, err := rsa.GenerateKey(rand.Reader, 2048)
 if err != nil {
@@ -167,7 +169,7 @@ Certificates must be signed by the private key of a parent certificate. Of cours
 
 `x509.CreateCertificate` takes 4 arguments (plus a source of randomness). The template of the certificate we want to create, the public key we want to wrap, the parent certificate, and the parent's private key.
 
-```go
+```
 func CreateCert(template, parent *x509.Certificate, pub interface{}, parentPriv interface{}) (
     cert *x509.Certificate, certPEM []byte, err error) {
 
@@ -189,7 +191,7 @@ func CreateCert(template, parent *x509.Certificate, pub interface{}, parentPriv 
 
 To create our self-signed cert (named `rootCert`), we provide the arguments listed above. But instead of using a parent certificate, the root key's information is used instead.
 
-```go
+```
 rootCert, rootCertPEM, err := CreateCert(rootCertTmpl, rootCertTmpl, &rootKey.PublicKey, rootKey)
 if err != nil {
 	log.Fatalf("error creating cert: %v", err)
@@ -225,7 +227,7 @@ Right away we can use this PEM encoded block in a server. However, let's remembe
 
 To keep this code cleaner, I'm going to use the <a href="https://golang.org/pkg/net/http/httptest/" target="_blank">`httptest`</a> package, which will allow us to spin up and shut down servers on a whim.
 
-```go
+```
 // PEM encode the private key
 rootKeyPEM := pem.EncodeToMemory(&pem.Block{
 	Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(rootKey),
@@ -248,7 +250,7 @@ s.TLS = &tls.Config{
 
 We can now make a HTTP request to the server, where we get a very familiar error message.
 
-```go
+```
 // make a HTTPS request to the server
 s.StartTLS()
 _, err = http.Get(s.URL)
@@ -268,7 +270,7 @@ Rather than using a self-signed certificate, let's create a setup that mimics a 
 
 First things first, we'll create a new key-pair and template.
 
-```go
+```
 // create a key-pair for the server
 servKey, err := rsa.GenerateKey(rand.Reader, 2048)
 if err != nil {
@@ -287,7 +289,7 @@ servCertTmpl.IPAddresses = []net.IP{net.ParseIP("127.0.0.1")}
 
 To create the server certificate, we're going to use a real parent this time. And again, we provide a public key for the certificate, and the parents private key (`rootKey`) to do the signing.
 
-```go
+```
 // create a certificate which wraps the server's public key, sign it with the root private key
 _, servCertPEM, err := CreateCert(servCertTmpl, rootCert, &servKey.PublicKey, rootKey)
 if err != nil {
@@ -297,7 +299,7 @@ if err != nil {
 
 We now have a PEM encoded certificate. To use this in a server, we have to have the private key to prove we own it.
 
-```go
+```
 // provide the private key and the cert
 servKeyPEM := pem.EncodeToMemory(&pem.Block{
 	Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(servKey),
@@ -317,7 +319,7 @@ If we made another request here, we'd still be in the same situation as before w
 
 To avoid this, we need to create a client which "trusts" `servCert`. Specifically, we have to trust a public key which validates `servCert`'s signature. Since we use the `root` key-pair to sign the certificate, if we trust `rootCert` (the public key), we'll trust the server's certificate.
 
-```go
+```
 // create a pool of trusted certs
 certPool := x509.NewCertPool()
 certPool.AppendCertsFromPEM(rootCertPEM)
@@ -332,7 +334,7 @@ client := &http.Client{
 
 When the server provides a certificate, the client will now validate the signature using all the certificates in `certPool` rather than the ones on my laptop. Let's see if this worked.
 
-```go
+```
 s.StartTLS()
 resp, err := client.Get(s.URL)
 s.Close()
@@ -371,7 +373,7 @@ While websites don't find this kind of auth particularly useful, databases and o
 
 It's easy to turn on client authentication for a Go server.
 
-```go
+```
 // create a new server which requires client authentication
 s = httptest.NewUnstartedServer(http.HandlerFunc(ok))
 s.TLS = &tls.Config{
@@ -393,7 +395,7 @@ http: TLS handshake error from 127.0.0.1:47038: tls: client didn't provide a cer
 
 In order for the client to provide a certificate, we have to create a template first.
 
-```go
+```
 // create a key-pair for the client
 clientKey, err := rsa.GenerateKey(rand.Reader, 2048)
 if err != nil {
@@ -411,7 +413,7 @@ clientCertTmpl.ExtKeyUsage = []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth}
 
 When creating a new certificate we'll again have the `rootCert` sign it. It doesn't have to be the same parent as the server, but this makes the example easier.
 
-```go
+```
 // the root cert signs the cert by again providing its private key
 _, clientCertPEM, err := CreateCert(clientCertTmpl, rootCert, &clientKey.PublicKey, rootKey)
 if err != nil {
@@ -430,7 +432,7 @@ if err != nil {
 
 The client now needs to trust the server's cert by trusting the cert pool we made earlier. As a reminder this holds the `rootCert`. It's also needs to present its own certificate.
 
-```go
+```
 authedClient := &http.Client{
 	Transport: &http.Transport{
 		TLSClientConfig: &tls.Config{
@@ -449,7 +451,7 @@ http: TLS handshake error from 127.0.0.1:59756: tls: failed to verify client's c
 
 To get around this, we have to configure a new test server to both present the server certificate, and trust the client's (by trusting `certPool` which holds `rootCert`).
 
-```go
+```
 s = httptest.NewUnstartedServer(http.HandlerFunc(ok))
 s.TLS = &tls.Config{
 	Certificates: []tls.Certificate{servTLSCert},
