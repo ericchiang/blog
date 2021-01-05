@@ -1,9 +1,9 @@
 +++
 title = "The Trusted Platform Module Key Hierarchy"
-date = "2020-12-30"
+date = "2021-01-04"
 +++
 
-The Trusted Platform Module is a security device built into all modern hardware qualified for Windows. TPMs can provide assurances about the kernel and boot sequence even if those systems have been compromised, and underpin technologies like Windows’ BitLocker, various [ChromeOS][chromeos] systems, and Linux’s Integrity Measurement Architecture.
+The Trusted Platform Module is a security device that sits on a physical motherboard, runs in a CPU trust zone, or is provided by a hypervisor. By functioning below the OS and boot sequence, it provides a trust anchor to verify those systems even if they’ve been compromised. TPMs are required for any device qualified for Windows, underpinning technologies like Windows’ BitLocker, various features in [ChromeOS][chromeos], and Linux’s Integrity Measurement Architecture.
 
 But looking at the [thousands of pages of specifications][specs] and auxiliary documents will also lead you to another conclusion. TPMs are ridiculously complex.
 
@@ -37,7 +37,7 @@ Special thanks to Tom D’Netto ([@Twitchyliquid64][Twitchyliquid64]), Brandon W
 ## TPMs on Linux
 The Kernel exposes the TPM under `/dev/tpm0` and `/dev/tpmrm0`. `tpm0` provides direct access to the TPM relying on userland to synchronize and load/unload keys, while `tpmrm0` uses the Kernel’s builtin resource manager. We’ll be using `tpmrm0` for this post.
 
-Once we’ve opened a file handle we can use [github.com/google/go-tpm][go-tpm] to execute TPM commands. Here’s a program that users the TPM as a source of randomness.
+Once we’ve opened a file handle we can use [github.com/google/go-tpm][go-tpm] to execute TPM commands. Here’s a program that uses the TPM as a source of randomness.
 
 ```
 f, err := os.OpenFile("/dev/tpmrm0", os.O_RDWR, 0)
@@ -322,11 +322,12 @@ if err != nil {
 }
 ```
 
-The certificate authority now uses this information to generate a challenge. This is also a chance to check public key attributes and reject any AIKs that don’t meet our requirements. For example, we likely want to throw out keys that don’t use FlagFixedTPM or FlagSensitiveDataOrigin since they can be imported or exported.
+The challenge asks the EK to verify another key name is also loaded into the TPM. Because key names are digests of the public key blob, the certificate authority can verify public key attributes and reject any that don’t match expectations. For example, we likely want to throw out keys that don’t use FlagFixedTPM or FlagSensitiveDataOrigin since they can be imported or exported.
 
 Included in the encrypted blob is a secret that the certificate authority tracks with the challenge.
 
 ```
+// Verify digest matches the public blob that was provided.
 name, err := tpm2.DecodeName(bytes.NewBuffer(nameData))
 if err != nil {
         log.Fatalf("unpacking name: %v", err)
@@ -342,13 +343,17 @@ pubHash := h.New()
 pubHash.Write(pubBlob)
 pubDigest := pubHash.Sum(nil)
 if !bytes.Equal(name.Digest.Value, pubDigest) {
-        log.Fatalf("attestation was not for public blob")
+        log.Fatalf("name was not for public blob")
 }
+
+// Inspect key attributes.
 pub, err := tpm2.DecodePublic(pubBlob)
 if err != nil {
         log.Fatalf("decode public blob: %v", err)
 }
 fmt.Printf("Key attributes: 0x08%x\n", pub.Attributes)
+
+// Generate a challenge for the name.
 secret := []byte("The quick brown fox jumps over the lazy dog")
 symBlockSize := 16
 credBlob, encSecret, err := credactivation.Generate(name.Digest, ekPub, symBlockSize, secret)
@@ -458,6 +463,8 @@ appKey, _, err := tpm2.Load(f, srk, "", pubBlob, privBlob)
 if err != nil {
         log.Fatalf("load app key: %v", err)
 }
+
+// Write key context to disk.
 appKeyCtx, err := tpm2.ContextSave(f, appKey)
 if err != nil {
         log.Fatalf("saving context: %v", err)
@@ -496,11 +503,12 @@ if !ok {
 if len(sigData) != 64 {
         log.Fatalf("expected ecdsa signature")
 }
-
-digest := sha256.Sum256(attestData)
 var r, s big.Int
 r.SetBytes(sigData[:len(sigData)/2])
 s.SetBytes(sigData[len(sigData)/2:])
+
+// Verify attested data is signed by the EK public key.
+digest := sha256.Sum256(attestData)
 if !ecdsa.Verify(aikECDSAPub, digest[:], &r, &s) {
         log.Fatalf("signature didn't match")
 }
@@ -509,6 +517,7 @@ if !ecdsa.Verify(aikECDSAPub, digest[:], &r, &s) {
 At this point the attestation data’s signature is correct and can be used to further verify the application key’s public key blob. We then unpack the blob to inspect the attributes of the newly created key.
 
 ```
+// Verify the signed attestation was for this public blob.
 a, err := tpm2.DecodeAttestationData(attestData)
 if err != nil {
         log.Fatalf("decode attestation: %v", err)
@@ -517,6 +526,8 @@ pubDigest := sha256.Sum256(pubBlob)
 if !bytes.Equal(a.AttestedCreationInfo.Name.Digest.Value, pubDigest[:]) {
         log.Fatalf("attestation was not for public blob")
 }
+
+// Decode public key and inspect key attributes.
 tpmPub, err := tpm2.DecodePublic(pubBlob)
 if err != nil {
         log.Fatalf("decode public blob: %v", err)
@@ -550,7 +561,7 @@ XkPamPSsWMK4+1NSWXJn+2QrptMLe/dHfo2g1eI5bAT/mq0eP8oDRgiA4A==
 
 ## Signing
 
-_Finally_ after chaining several keys together, we can start using the application key. While you could add additional logic to authenticate a session or verify the algorithm was correct, a simple version of a [crypto.Signer][crypto-signer] simply calls the Sign method directly and unpacks the result.
+_Finally_ after chaining several keys together, we can start using the application key. While you could add additional logic to authenticate a session or verify the algorithm was correct, a simple version of a [crypto.Signer][crypto-signer] calls the Sign method directly and unpacks the result.
 
 Note that this code won’t work with [restricted keys][restricted-key], which can only sign messages hashed by the TPM first.
 
@@ -644,4 +655,5 @@ So what next?
 
 The bad news is, there’s an entire set of features for state attestation we haven’t covered in this post. The good news is, those features aren’t as useful without attesting that you’re communicating with the correct TPM. Even if you never run an application that requires hardware backed keys, you’ll need to set up a similar hierarchy to do boot integrity checks.
 
-TPMs are in a unique position to provide security assurances that technologies further up the stack can’t. While they continue to be extremely complicated, hopefully these examples make it a little easier to get some value out of these devices.
+At the very least, key attestation can prove that a private key is bound to a specific TPM and can’t be exported. With a little bit of copypasta, this can be used to identify devices and guarantee keys are generated securely.
+
