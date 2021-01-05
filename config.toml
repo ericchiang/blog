@@ -18,3 +18,8 @@ googleAnalytics = "UA-64244584-1"
     name = "2"
     identifier = "about"
     url = "/about/"
+
+[[menu.main]]
+    name = "2"
+    identifier = "license"
+    url = "/license/"
