@@ -236,7 +236,7 @@ For privacy, keys generated from seeds such as the EK and SRK can only decrypt, 
 
 Proving a key is on the same TPM as the EK is complicated because EK can’t simply sign an attestation. Instead, we use a challenge and response protocol called Credential Activation where a certificate authority encrypts a secret then asks the EK to decrypt it.
 
-First, we have to create our Attestestation Identity Key (AIK). This will be a child of the SRK, but we’ll also need the EK for the challenge.
+First, we have to create our Attestation Identity Key (AIK). This will be a child of the SRK, but we’ll also need the EK for the challenge.
 
 ```
 f, err := os.OpenFile("/dev/tpmrm0", os.O_RDWR, 0)
@@ -297,12 +297,6 @@ aik, nameData, err := tpm2.Load(f, srk, "", pubBlob, privBlob)
 if err != nil {
         log.Fatalf("load aik: %v", err)
 }
-// go-tpm currently removes the name size prefix. Add it back.
-// https://github.com/google/go-tpm/issues/230
-nameData = append([]byte{
-        byte(uint16(len(nameData)) >> 8),
-        byte(uint16(len(nameData))),
-}, nameData...)
 
 aikCtx, err := tpm2.ContextSave(f, aik)
 if err != nil {
@@ -380,7 +374,7 @@ if err != nil {
 }
 
 auth := tpm2.AuthCommand{Session: tpm2.HandlePasswordSession, Attributes: tpm2.AttrContinueSession}
-if _, err := tpm2.PolicySecret(f, tpm2.HandleEndorsement, auth, session, nil, nil, nil, 0); err != nil {
+if _, _, err := tpm2.PolicySecret(f, tpm2.HandleEndorsement, auth, session, nil, nil, nil, 0); err != nil {
         log.Fatalf("policy secret failed: %v", err)
 }
 
