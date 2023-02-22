@@ -348,7 +348,7 @@ if err != nil {
 fmt.Printf("Key attributes: 0x08%x\n", pub.Attributes)
 
 // Generate a challenge for the name.
-secret := []byte("The quick brown fox jumps over the lazy dog")
+secret := []byte("Brevity is the soul of wit")
 symBlockSize := 16
 credBlob, encSecret, err := credactivation.Generate(name.Digest, ekPub, symBlockSize, secret)
 if err != nil {
@@ -392,7 +392,7 @@ After a bit of song and dance, this program prints the secret we used in the cha
 $ go build -o bin/aik aik.go
 $ sudo ./bin/aik
 Key attributes: 0x0850072
-The quick brown fox jumps over the lazy dog
+Brevity is the soul of wit
 ```
 
 [create-primary]: https://trustedcomputinggroup.org/wp-content/uploads/TCG_TPM2_r1p59_Part3_Commands_pub.pdf#page=293
