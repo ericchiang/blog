@@ -348,6 +348,8 @@ if err != nil {
 fmt.Printf("Key attributes: 0x08%x\n", pub.Attributes)
 
 // Generate a challenge for the name.
+//
+// Note that some TPMs enforce a maximum secret size of 32 bytes.
 secret := []byte("Brevity is the soul of wit")
 symBlockSize := 16
 credBlob, encSecret, err := credactivation.Generate(name.Digest, ekPub, symBlockSize, secret)

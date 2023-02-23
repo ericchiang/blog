@@ -11,7 +11,7 @@ So, let's have a little fun and use those underlying technologies to build our o
 
 On today's agenda:
 
-* [setting up a file system](#container-file-system)
+* [setting up a file system](#container-file-systems)
 * [chroot](#chroot)
 * [unshare](#creating-namespaces-with-unshare)
 * [nsenter](#entering-namespaces-with-nsenter)
