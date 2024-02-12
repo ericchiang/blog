@@ -25,3 +25,8 @@ theme = "xmin"
     name = "2"
     identifier = "license"
     url = "/license/"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
