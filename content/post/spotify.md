@@ -210,5 +210,3 @@ Ah, that brings me back.
 Compliance is clearly a motivating factor for Spotify to provide this data. But as a happy Spotify user, I've enjoyed this feature and am glad they built it. I was able to take a weekend, hack around, and get some great nostalgia because I found it valuable. It didn't require some product lifecycle and business justification to build into the Spotify app.
 
 Hopefully this post will empower some others to take their own trip down memory lane with this data.
-
-I will note I found it surprisingly hard to think of analysis that doesn't fall into the "top X for period Y" pattern. Spotify Wrapped supplements their year-in-review reports with genre information, other user's listening habbits, and tidbits about the artists you've listen to, which isn't part of the data they provide. If you have any thoughts of visualizations that might be interesting, feel free to reach out, and I'll give it a try!
