@@ -6,10 +6,8 @@ theme = "xmin"
   [services.googleAnalytics]
     ID = "G-YR9ZQCMH4S"
 
-[author]
+[[params.author]]
     name = "Eric Chiang"
-    github = "ericchiang"
-    twitter = "erchiang"
 
 [[menu.main]]
     name = "1"
@@ -22,7 +20,12 @@ theme = "xmin"
     url = "/about/"
 
 [[menu.main]]
-    name = "2"
+    name = "3"
+    identifier = "rss"
+    url = "/post/index.xml"
+
+[[menu.main]]
+    name = "4"
     identifier = "license"
     url = "/license/"
 
