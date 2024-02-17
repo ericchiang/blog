@@ -6,7 +6,7 @@ published = "2024-02-16"
 
 What's a little shared memory between friends?
 
-As someone who works a lot with operating systems, there are many scenario that require loading C libraries. Plugins that use [shared libraries](https://github.com/google/go-pkcs11), low-level [device APIs](https://github.com/go-piv/piv-go), random [Linux utilities](https://github.com/google/go-tspi). Despite modern options for interprocess communication, sometimes you get a header file and a shared object and have to run with it.
+As someone who works a lot with operating systems, there are many scenarios that require loading C libraries. Plugins that use [shared libraries](https://github.com/google/go-pkcs11), low-level [device APIs](https://github.com/go-piv/piv-go), random [Linux utilities](https://github.com/google/go-tspi). Despite modern options for interprocess communication, sometimes you get a header file and a shared object and have to run with it.
 
 This post covers [cgo](https://pkg.go.dev/cmd/cgo), Go's C interoperability layer.
 

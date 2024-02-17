@@ -57,5 +57,5 @@ Work
 - _CoreOS (acquired by Red Hat)_ - November 2015 - June 2018
 - _Yhat ([YC W15](https://www.ycombinator.com/companies/yhat))_ - March 2014 - November 2015
 - _IBM (intern)_ - June 2013 – September 2013
-- _Genentech (intern)_ - March 2013 – June 201
+- _Genentech (intern)_ - March 2013 – June 2013
 - _Cloudera (intern)_ - May 2012 – August 2012
