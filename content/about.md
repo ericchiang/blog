@@ -8,7 +8,7 @@ Eric Chiang
 - twitter: [@erchiang](https://twitter.com/erchiang)  
 - email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
 
-Software Engineering lead at Google. I have approximate knowledge of many things.
+Software Engineering lead at Google.
 
 Talks
 
