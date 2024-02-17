@@ -1,5 +1,5 @@
 +++
-title = "Keep it Simple, Stupid"
+title = "Keep it simple, stupid"
 date = "2020-01-05"
 +++
 

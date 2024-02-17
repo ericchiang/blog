@@ -1,5 +1,5 @@
 +++
-title = "The Rust Borrow Checker"
+title = "The Rust borrow checker"
 date = "2021-09-07"
 +++
 

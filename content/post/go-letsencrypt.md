@@ -1,5 +1,5 @@
 +++
-title = "A Let's Encrypt Client for Go"
+title = "A Let's Encrypt client for Go"
 date = "2015-11-13"
 +++
 

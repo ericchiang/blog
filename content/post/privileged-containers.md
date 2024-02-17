@@ -1,5 +1,5 @@
 +++
-title = "Privileged Containers Aren't Containers"
+title = "Privileged containers aren't containers"
 date = "2019-09-23"
 +++
 

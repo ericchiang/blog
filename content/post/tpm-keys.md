@@ -1,5 +1,5 @@
 +++
-title = "The Trusted Platform Module Key Hierarchy"
+title = "The Trusted Platform Module key hierarchy"
 date = "2021-01-04"
 +++
 

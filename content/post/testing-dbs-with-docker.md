@@ -1,5 +1,5 @@
 +++
-title = "Testing Databases with Docker"
+title = "Testing databases with Docker"
 date = "2015-09-14"
 +++
 
