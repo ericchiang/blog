@@ -1,7 +1,6 @@
 +++
 title = "Calling C from Go"
 date = "2024-02-17"
-published = "2024-02-16"
 +++
 
 What's a little shared memory between friends?
