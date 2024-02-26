@@ -1,14 +1,13 @@
 +++
-title = "Writing shared libraries using Rust"
+title = "Writing shared libraries in Rust"
 date = "2024-02-26"
-published = "2024-02-25"
 +++
 
 Every tool that gets big enough eventually provides a way to support third-party logic. Maybe you expose APIs for clients to call. Maybe you take some code and run it in a sandbox. Maybe you embed a Lua interpreter.
 
 For many programs, extensibility means dynamic shared libraries. Good old, "here's a .so file for you to dlopen()." [PKCS #11](https://docs.oasis-open.org/pkcs11/pkcs11-base/v2.40/os/pkcs11-base-v2.40-os.html), [Sudo Plugins](https://www.sudo.ws/about/plugins/), [Python](https://docs.python.org/3/extending/extending.html) and [NodeJS](https://nodejs.org/api/addons.html) addons, [SQLite](https://www.sqlite.org/loadext.html) and [Postgres](https://www.postgresql.org/download/products/6-postgresql-extensions/) extensions, [Nginx](https://www.nginx.com/resources/wiki/modules/) and [httpd](https://httpd.apache.org/modules/) modules, even [LD_PRELOAD](https://blog.jessfraz.com/post/ld_preload/) hacks.
 
-As much fun as C is, I've been motivated by [recent](https://github.com/google/native-pkcs11) [projects](https://github.com/square/sudo_pair) that take advantage of Rust's FFI support. This post covers a proof-of-concept Linux-PAM module for [_Google Authenticator_](https://en.wikipedia.org/wiki/Google_Authenticator)*, going through the steps to build a shared library with Rust.
+As much fun as C is, a few [recent](https://github.com/google/native-pkcs11) [projects](https://github.com/square/sudo_pair) that take advantage of Rust's FFI support have caught my eye. This post covers a proof-of-concept Linux-PAM module for [_Google Authenticator_](https://en.wikipedia.org/wiki/Google_Authenticator)*, going through the steps to build a shared library with Rust.
 
 <sub>_*Sure there's an actual module [maintained under Google's GitHub org](https://github.com/google/google-authenticator-libpam), but where's the fun in that?_</sub>
 
@@ -376,7 +375,7 @@ fi
 sudo cp target/release/libpam_totp.so /lib/x86_64-linux-gnu/security/pam_totp.so
 ```
 
-And write the base32'd TOTP secret to `/etc` (don't actually do this in a real system).
+And write the base32'd TOTP secret to `/etc`.
 
 ```
 // Is this an HSM?
