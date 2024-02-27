@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 
 HUGO_VERSION="v0.122.0"
@@ -6,6 +6,9 @@ HUGO_VERSION="v0.122.0"
 case "$1" in
 	"")
       go run "github.com/gohugoio/hugo@${HUGO_VERSION}" server
+	  ;;
+	"--")
+      go run "github.com/gohugoio/hugo@${HUGO_VERSION}" ${@:2}
 	  ;;
 	"update")
       go run "github.com/gohugoio/hugo@${HUGO_VERSION}"

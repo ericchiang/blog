@@ -1,12 +1,14 @@
 {{ partial "header.html" . }}
 
-<ul>
+<ul style="list-style: none;">
   {{ range (where .Pages "Section" "!=" "") }}
   {{ range .Pages }}
+  {{ if ne .Title "Keep it simple, stupid" }}
   <li>
     <span class="date">{{ .Date.Format "2006/01/02" }}</span>
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
   </li>
+  {{ end }}
   {{ end }}
   {{ end }}
 </ul>
