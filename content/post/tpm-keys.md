@@ -63,7 +63,7 @@ $ sudo ./bin/rand
 8cb55dc1aed3f010f40e0688b7438b53
 ```
 
-[go-tpm]: https://github.com/google/go-tpm
+[go-tpm]: https://pkg.go.dev/github.com/google/go-tpm/legacy/tpm2
 [trousers]: http://trousers.sourceforge.net/faq.html
 
 ## Key hierarchies
