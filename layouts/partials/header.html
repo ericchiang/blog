@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ .Title }}</title>
+    <title>Eric Chiang | {{ .Title }}</title>
     <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}" />
     <link rel="stylesheet" href="{{ "/css/fonts.css" | relURL }}" />
     {{ partial "head_custom.html" . }}
@@ -13,6 +13,7 @@
   <body>
     <nav>
     <ul class="menu">
+	  <li class="menu-element">Eric Chiang</li>
       {{ range .Site.Menus.main }}
       <li><a href="{{ .URL | relURL }}">{{ .Identifier }}</a></li>
       {{ end }}
