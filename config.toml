@@ -11,13 +11,13 @@ theme = "xmin"
 
 [[menu.main]]
     name = "1"
-    identifier = "posts"
-    url = "/"
+    identifier = "Eric Chiang"
+    url = "/about/"
 
 [[menu.main]]
     name = "2"
-    identifier = "about"
-    url = "/about/"
+    identifier = "posts"
+    url = "/"
 
 [[menu.main]]
     name = "3"

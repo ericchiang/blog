@@ -2,13 +2,15 @@
 title = "about"
 +++
 
-Eric Chiang
-
-- github: [@ericchiang](https://github.com/ericchiang)
-- twitter: [@erchiang](https://twitter.com/erchiang)  
-- email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
+![](../imgs/me.jpg)
 
 Software Engineering lead at Google.
+
+- email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
+- github: [@ericchiang](https://github.com/ericchiang)
+- twitter: [@erchiang](https://twitter.com/erchiang)  
+- linkedin: [profile](https://www.linkedin.com/in/eric-chiang-1047831bb/)
+
 
 Talks
 
