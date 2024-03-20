@@ -1,6 +1,6 @@
 languageCode = "en-us"
 baseurl = "https://ericchiang.github.io/"
-title = "posts"
+title = "Eric Chiang"
 theme = "xmin"
 [services]
   [services.googleAnalytics]
@@ -22,7 +22,7 @@ theme = "xmin"
 [[menu.main]]
     name = "3"
     identifier = "rss"
-    url = "/post/index.xml"
+    url = "/index.xml"
 
 [[menu.main]]
     name = "4"
