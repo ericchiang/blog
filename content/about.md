@@ -14,6 +14,7 @@ Software Engineering lead at Google.
 
 Talks
 
+- _Insecurity Protocols: An Overview of Modern Authentication_ ([slides](https://docs.google.com/presentation/d/1UfVjUhZiCIXX_3uxikG8W342jBo6JWrqnILSiUvHXvU/edit?usp=sharing)) - BSides SF - 2024
 - [_Creating a Culture of Security (pannel)_](https://youtu.be/fINZQs61s0g?si=3K4dU7GFoC_Xckz4) - DASH by DataDog - 2023
 - [_Scalable security: how to win friends and not burn out everyone_](https://youtu.be/c3B-ig_1nbk?si=77LeE81IyZXaEkc0) - BSides SF - 2023
 - [_The road to BeyondCorp is paved with good intentions_](https://youtu.be/UWpTFiRf4Uw?si=z5rqAfTpNdSX4zno) - NorthSec - 2022
