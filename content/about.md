@@ -8,14 +8,14 @@ Software Engineering lead at Google.
 
 - email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
 - github: [@ericchiang](https://github.com/ericchiang)
-- twitter: [@erchiang](https://twitter.com/erchiang)  
+- bluesky: [@ericchiang.bsky.social](https://bsky.app/profile/ericchiang.bsky.social)  
 - linkedin: [profile](https://www.linkedin.com/in/eric-chiang-1047831bb/)
 
 
 Talks
 
 - [_Insecurity Protocols: An Overview of Modern Authentication_](https://youtu.be/yX8hyMmoVMo?si=1IjaWURYu0nkL6xV) ([slides](https://docs.google.com/presentation/d/1UfVjUhZiCIXX_3uxikG8W342jBo6JWrqnILSiUvHXvU/edit?usp=sharing)) - BSides SF - 2024
-- [_Creating a Culture of Security (pannel)_](https://youtu.be/fINZQs61s0g?si=3K4dU7GFoC_Xckz4) - DASH by DataDog - 2023
+- [_Creating a Culture of Security (panel)_](https://youtu.be/fINZQs61s0g?si=3K4dU7GFoC_Xckz4) - DASH by DataDog - 2023
 - [_Scalable security: how to win friends and not burn out everyone_](https://youtu.be/c3B-ig_1nbk?si=77LeE81IyZXaEkc0) - BSides SF - 2023
 - [_The road to BeyondCorp is paved with good intentions_](https://youtu.be/UWpTFiRf4Uw?si=z5rqAfTpNdSX4zno) - NorthSec - 2022
 - [_Binary Policy with IMA and AppArmor_](https://youtu.be/Qqp_pb8qKFY?si=PMktAyzmgVS6qV6F) - Linux Security Summit - 2019
