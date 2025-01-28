@@ -7,7 +7,7 @@ Recently, I’ve had a few conversations about [NVIDIA Confidential Compute](htt
 
 The pitch generally looks like this: Companies are protective of their weights and their data. We should be able to train and/or run models on GPUs securely using attestation primitives. In the same way that we might store a private key in an HSM, surely we can design a similar construct for AI.
 ## On confidential compute
-“Confidential compute” encompasses a few different technologies. Trusted Execution Environments (TTEs), encrypted memory, and hardware attestation.
+“Confidential compute” encompasses a few different technologies. Trusted Execution Environments (TEEs), encrypted memory, and hardware attestation.
 
 A TEE runs small bits of code without an OS, directly on the CPU, with the hardware verifying the executable against an allowed list of hashes for integrity. Skipping the OS provides an easy-to-attest link between the hardware and the code, but forgoes fancy programming features like threads. As such, TEEs are used for low-level credential managers like firmware Trusted Platform Modules (fTPMs), rather than a privileged space to run application logic.
 
@@ -33,7 +33,7 @@ Okay, we’ve hardened our OS, attested a number of fidgety components through h
 
 To date, Apple’s [Private Cloud Compute](https://security.apple.com/blog/private-cloud-compute/) is one of the more public attempts to provide cohesive data guarantees for AI inference. The Secure Enclave (Apple’s TEE equivalent) and Secure Boot are both mentioned early in the whitepaper, but are foundational instead of being used directly to attest the system to users.
 
-Hardware security doesn’t mean much without broader controls around how data can move in and out of the system. While Private Cloud Compute leverages cryptographic schemes and provides a binary audit log for researchers, I’d describe a significant amount of the controls as pragmatic production hardening. Code signing, removal of remote shells, using a memory safe language, not storing the user query in a database, whipping the disk between reboots, a minimal base OS. 
+Hardware security doesn’t mean much without broader controls around how data can move in and out of the system. While Private Cloud Compute leverages cryptographic schemes and provides a binary audit log for researchers, I’d describe a significant amount of the controls as pragmatic production hardening. Code signing, removal of remote shells, using a memory safe language, not storing the user query in a database, wiping the disk between reboots, a minimal base OS. 
 
 To put it another way: what’s the point of encrypted RAM if your application chooses to do something unsafe? Hardware controls don't exist in a vacuum and are no guarantee that your software handles data in a secure way.
 
