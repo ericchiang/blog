@@ -4,13 +4,22 @@ title = "about"
 
 ![](../imgs/me.jpg)
 
-Software Engineering lead at Google.
+Co-Founder and CTO at [Oblique](https://oblique.security/).
 
 - email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
 - github: [@ericchiang](https://github.com/ericchiang)
 - bluesky: [@ericchiang.bsky.social](https://bsky.app/profile/ericchiang.bsky.social)  
 - linkedin: [profile](https://www.linkedin.com/in/eric-chiang-1047831bb/)
 
+Work
+
+- _Oblique_ - March 20225 - present
+- _Google_ - July 2018 - March 2025
+- _CoreOS (acquired by Red Hat)_ - November 2015 - June 2018
+- _Yhat ([YC W15](https://www.ycombinator.com/companies/yhat))_ - March 2014 - November 2015
+- _IBM (intern)_ - June 2013 – September 2013
+- _Genentech (intern)_ - March 2013 – June 2013
+- _Cloudera (intern)_ - May 2012 – August 2012
 
 Talks
 
@@ -54,11 +63,3 @@ Posts on other sites
 - [_Image Processing with scikit-image_](https://web.archive.org/web/20140708090651/http://blog.yhathq.com/posts/image-processing-with-scikit-image.html) - January 30, 2014
 - [_Weather Forecasting with Twitter & Pandas_](https://web.archive.org/web/20140805120155/http://blog.yhathq.com/posts/predict-weather-with-kaggle-twitter-emoticons-pandas.html) - December 5th, 2013
 
-Work
-
-- _Google_ - July 2018 - Present
-- _CoreOS (acquired by Red Hat)_ - November 2015 - June 2018
-- _Yhat ([YC W15](https://www.ycombinator.com/companies/yhat))_ - March 2014 - November 2015
-- _IBM (intern)_ - June 2013 – September 2013
-- _Genentech (intern)_ - March 2013 – June 2013
-- _Cloudera (intern)_ - May 2012 – August 2012
