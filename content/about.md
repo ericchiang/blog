@@ -13,7 +13,7 @@ Co-Founder and CTO at [Oblique](https://oblique.security/).
 
 Work
 
-- _Oblique_ - March 20225 - present
+- _Oblique_ - March 2025 - present
 - _Google_ - July 2018 - March 2025
 - _CoreOS (acquired by Red Hat)_ - November 2015 - June 2018
 - _Yhat ([YC W15](https://www.ycombinator.com/companies/yhat))_ - March 2014 - November 2015
