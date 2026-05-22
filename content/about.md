@@ -8,7 +8,7 @@ Co-Founder and CTO at [Oblique](https://oblique.security/).
 
 - email: [eric.chiang.m@gmail.com](mailto:eric.chiang.m@gmail.com)
 - github: [@ericchiang](https://github.com/ericchiang)
-- bluesky: [@ericchiang.bsky.social](https://bsky.app/profile/ericchiang.bsky.social)  
+- bluesky: [@ericchiang.bsky.social](https://bsky.app/profile/ericchiang.bsky.social)
 - linkedin: [profile](https://www.linkedin.com/in/eric-chiang-1047831bb/)
 
 Work
@@ -23,15 +23,17 @@ Work
 
 Talks
 
+- [_The Trusted Platform Module_](https://www.youtube.com/watch?v=As2yo2Jrw8w) ([slides](https://docs.google.com/presentation/d/14kYnPXkaEpkhzNbrX1zaATSknhYpXzDk0fDG9vraEMA/edit?usp=sharing)) - BSides SF - 2026
+- [_You, Me, and the HSM: End-to-end encryption’s move to hardware_](https://www.youtube.com/watch?v=S8dJ2ra6D-Y) ([slides](https://docs.google.com/presentation/d/1uXVislMI-uoW7nAFG95-FBRzGcKQqiPJi1eA-_dss_k/edit?usp=sharing)) - BSides Seattle - 2026
 - [_Insecurity Protocols: An Overview of Modern Authentication_](https://youtu.be/yX8hyMmoVMo?si=1IjaWURYu0nkL6xV) ([slides](https://docs.google.com/presentation/d/1UfVjUhZiCIXX_3uxikG8W342jBo6JWrqnILSiUvHXvU/edit?usp=sharing)) - BSides SF - 2024
 - [_Creating a Culture of Security (panel)_](https://youtu.be/fINZQs61s0g?si=3K4dU7GFoC_Xckz4) - DASH by DataDog - 2023
 - [_Scalable security: how to win friends and not burn out everyone_](https://youtu.be/c3B-ig_1nbk?si=77LeE81IyZXaEkc0) - BSides SF - 2023
 - [_The road to BeyondCorp is paved with good intentions_](https://youtu.be/UWpTFiRf4Uw?si=z5rqAfTpNdSX4zno) - NorthSec - 2022
 - [_Binary Policy with IMA and AppArmor_](https://youtu.be/Qqp_pb8qKFY?si=PMktAyzmgVS6qV6F) - Linux Security Summit - 2019
-- [_PKI for Gophers_](https://youtu.be/VwPQKS9Njv0?si=gvMHJCdvyzXRFRHC) - GopherCon - 2019 
-- [_Containers from Scratch_](https://youtu.be/wyqoi52k5jM?si=PKOuA7cS8-f6wMG6) - CoreOS Fest - 2017 
+- [_PKI for Gophers_](https://youtu.be/VwPQKS9Njv0?si=gvMHJCdvyzXRFRHC) - GopherCon - 2019
+- [_Containers from Scratch_](https://youtu.be/wyqoi52k5jM?si=PKOuA7cS8-f6wMG6) - CoreOS Fest - 2017
 - [_Kubernetes Auth and Access Control_](https://youtu.be/WvnXemaYQ50?si=Xg6UL6A1H4iu1IWa) - KubeCon Seattle - 2016
-- [_Kubernetes Access Control with Dex_](https://youtu.be/i75ysFcvCkk?si=wfCOXc5Cih27q1tc) - CoreOS Fest - 2016 
+- [_Kubernetes Access Control with Dex_](https://youtu.be/i75ysFcvCkk?si=wfCOXc5Cih27q1tc) - CoreOS Fest - 2016
 - [_Why is Python so fast?_](https://youtu.be/8hHOxfXcWsg?si=4rBVdaDtur5Wze9k) - PyGotham - 2014
 
 Select open source
@@ -52,6 +54,11 @@ Research
 
 Posts on other sites
 
+- [_Generating an MCP server in Go_](https://oblique.security/blog/mcp/) - May 14, 2026
+- [_Passkey PRFs for end-to-end encryption_](https://oblique.security/blog/passkey-prf/) - February 25, 2026
+- [_Go’s synctest is amazing_](https://oblique.security/blog/go-synctest/) - February 5, 2026
+- [_Injection-proof SQL builders in Go_](https://oblique.security/blog/injection-proof-sql/) - August 18, 2025
+- [_Authenticating GitHub Actions without API keys_](https://oblique.security/blog/github-actions-identity/) - July 31, 2025
 - [_Kubernetes 1.9 and a look inside the Kubernetes project_](https://web.archive.org/web/20190113035754/https://coreos.com/blog/kubernetes-19-and-a-look-inside-the-project) - December 13, 2017
 - [_Using RBAC, Generally Available in Kubernetes v1.8_](http://blog.kubernetes.io/2017/10/using-rbac-generally-available-18.html) - October 27, 2017
 - [_Kubernetes 1.8 brings security, extensibility improvements_](https://web.archive.org/web/20190113042438/https://coreos.com/blog/kubernetes-1.8-announcement) - September 28, 2017
@@ -62,4 +69,3 @@ Posts on other sites
 - [_Predicting customer churn with scikit-learn_](https://web.archive.org/web/20140726051144/http://blog.yhathq.com/posts/predicting-customer-churn-with-sklearn.html) - March 20, 2014
 - [_Image Processing with scikit-image_](https://web.archive.org/web/20140708090651/http://blog.yhathq.com/posts/image-processing-with-scikit-image.html) - January 30, 2014
 - [_Weather Forecasting with Twitter & Pandas_](https://web.archive.org/web/20140805120155/http://blog.yhathq.com/posts/predict-weather-with-kaggle-twitter-emoticons-pandas.html) - December 5th, 2013
-
